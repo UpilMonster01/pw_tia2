@@ -1,6 +1,13 @@
 //fungtion
 <?php
-function hitungLuasPersegiPanjang($panjang, $lebar) {
-    $luas = $panjang * $lebar;
-    return $luas;
+function hitungPersegi($sisi) {
+    $luas = $sisi * $sisi;
+    $keliling = 4 * $sisi;
+
+    echo "Sisi: $sisi <br>";
+    echo "Luas: $luas <br>";
+    echo "Keliling: $keliling";
 }
+
+hitungPersegi(5);
+?>
