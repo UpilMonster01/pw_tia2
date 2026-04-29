@@ -53,3 +53,32 @@ if (isset($_POST['angka1']) && isset($_POST['angka2'])) {
     }
 }
 ?>
+
+
+
+<form method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <br><br>
+    <input type="password" name="password" placeholder="Password" required>
+    <br><br>
+    <button type="submit" name="login">Login</button>
+</form>
+<?php
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    echo login($username, $password);
+}
+
+
+function login($username, $password)
+{
+    if ($username == "admin" && $password == "1234") {
+        return "Login Berhasil - Selamat datang, " . $username;
+    } else {
+        return "Login Gagal - Username atau Password salah";
+    }
+} 
+
+?>
+
