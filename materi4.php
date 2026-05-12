@@ -7,18 +7,6 @@
 </form>
 <?php
 include "koneksi.php";
-if (isset($_POST['update'])) {
-    $id = $_POST['id'];
-
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $nama = $_POST['nama'];
-    $email = $_POST['email'];
-
-    edit_data($koneksi, $id, $username, $password, $nama, $email);
-    header("Location: materi4.php");
-    exit();
-}
 if (isset($_POST['kirim'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -45,72 +33,66 @@ if (isset($_POST['kirim'])) {
         <th>Aksi</th>
     </tr>
 <?php
-
-function tampil_data($koneksi)
-{
-    $sql = "SELECT * FROM user";
-    $query = mysqli_query($koneksi, $sql);
-    while ($data = mysqli_fetch_array($query)) {
-        echo "<tr>";
-        echo "<td>" . $data['username'] . "</td>";
-        echo "<td>" . $data['password'] . "</td>";
-        echo "<td>" . $data['nama'] . "</td>";
-        echo "<td>" . $data['email'] . "</td>";
-        echo "<td>";
-        echo "<a href='materi4.php?edit=" . $data['id'] . "'>Edit</a> | ";
-        echo "<a href='materi4.php?hapus=" . $data['id'] . "'>Delete</a>";
-        echo "</td>";
-        echo "</tr>";
-    }
+$query = "SELECT * FROM user";
+$result = mysqli_query($koneksi, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+    echo "<tr>";
+    echo "<td>" . $row['username'] . "</td>";
+    echo "<td>" . $row['password'] . "</td>";
+    echo "<td>" . $row['nama'] . "</td>";
+    echo "<td>" . $row['email'] . "</td>";
+    echo "<td>";
+    echo "<a href='materi4.php?id=" . $row['id'] . "'>Hapus</a> | ";
+    echo "<a href='materi4.php?edit=" . $row['id'] . "'>Edit</a>";
+    echo "</td>";
+    echo "</tr>";
 }
-function tambah_data($koneksi, $username, $password, $nama, $email)
-{
-    $sql = "INSERT INTO user (username, password, nama, email) VALUES ('$username', '$password', '$nama', '$email')";
-    if (mysqli_query($koneksi, $sql)) {
-        echo "Data berhasil ditambahkan!";
-    } else {
-        echo "data gagal ditambahkan: " . mysqli_error($koneksi);
-    }
-}
-if (isset($_GET['hapus'])) {
-    $id = $_GET['hapus'];
-
-    delete_data($koneksi, $id);
-}
-function edit_data($koneksi, $id, $username, $password, $nama, $email)
-{
-    $sql = "UPDATE user SET username='$username', password='$password', nama='$nama', email='$email' WHERE id='$id'";
-    if (mysqli_query($koneksi, $sql)) {
-        echo "Data berhasil diupdate!";
-    } else {
-        echo "data gagal diupdate: " . mysqli_error($koneksi);
-    }
-}
-if (isset($_GET['edit'])) {
-    $id = $_GET['edit'];
-    
-    $sql = "SELECT * FROM user WHERE id=$id";
-    $query = mysqli_query($koneksi, $sql);
-    $data = mysqli_fetch_array($query);
-
-    echo "<form action='' method='POST'>";
-    echo "Username: <input type='text' name='username' value='" . $data['username'] . "' required><br>";
-    echo "Password: <input type='password' name='password' value='" . $data['password'] . "' required><br>";
-    echo "Nama: <input type='text' name='nama' value='" . $data['nama'] . "' required><br>";
-    echo "Email: <input type='email' name='email' value='" . $data['email'] . "' required><br>";
-    echo "<input type='hidden' name='id' value='" . $data['id'] . "'>";
-    echo "<input type='submit' name='update' value='Update'>";
-    echo "</form>";
-}
-function delete_data($koneksi, $id)
-{
-    $sql = "DELETE FROM user WHERE id=$id";
-    if (mysqli_query($koneksi, $sql)) {
+// Hapus data ------------------------
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $deleteQuery = "DELETE FROM user WHERE id = '$id'";
+    if (mysqli_query($koneksi, $deleteQuery)) {
         echo "Data berhasil dihapus!";
     } else {
-        echo "data gagal dihapus: " . mysqli_error($koneksi);
+        echo "Data gagal dihapus: " . mysqli_error($koneksi);
     }
 }
-tampil_data($koneksi);
+// Edit data ------------------------
+if (isset($_GET['edit'])) {
+    $id = $_GET['edit'];
+    $query = "SELECT * FROM user WHERE id = '$id'";
+    $editResult = mysqli_query($koneksi, $query);
+    $row = mysqli_fetch_assoc($editResult);
+
+    $username = $row['username'];
+    $password = $row['password'];
+    $nama = $row['nama'];
+    $email = $row['email'];
+    
+    echo "<form action='' method='POST'>";
+    echo "Username: <input type='text' name='username' value='" . $username . "' required><br>";
+    echo "Password: <input type='password' name='password' value='" . $password . "' required><br>";
+    echo "Nama: <input type='text' name='nama' value='" . $nama . "' required><br>";       
+    echo "Email: <input type='email' name='email' value='" . $email . "' required><br>";
+    echo "<input type='hidden' name='id' value='" . $row['id'] . "'>";
+    echo "<input type='submit' name='update' value='Update'>";
+    echo "</form>";
+    
+}
+if (isset($_POST['update'])) {
+    $id = $_POST['id'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $nama = $_POST['nama'];
+    $email = $_POST['email'];
+
+ 
+    $query = "UPDATE user SET username='$username', password='$password', nama='$nama', email='$email' WHERE id='$id'";
+    if (mysqli_query($koneksi, $query)) {
+        echo "Data berhasil diupdate!";
+    } else {
+        echo "Data gagal diupdate: " . mysqli_error($koneksi);
+    }
+}
 ?>
 </table>
